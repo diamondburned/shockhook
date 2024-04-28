@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-vader.css" type="text/css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<title>Shockhook Admin</title>
+
+<style>
+  html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  body {
+    font-size: 15pt;
+    font-family: "Nanum Pen Script", cursive;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1;
+    max-width: 26em;
+  }
+
+  h1 {
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    margin: 1rem 0;
+  }
+
+  label small {
+    font-weight: normal;
+    font-size: 0.8em;
+    line-height: 1.5;
+  }
+
+  label .range-value {
+    margin-left: 0.25em;
+  }
+
+  input[type="range"] {
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  textarea[name="allowed_rooms"] {
+    width: 100%;
+    resize: vertical;
+  }
+
+  form button {
+    width: 100%;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+  }
+
+  .save-button {
+    background-color: #2196F3;
+    margin-bottom: 1rem;
+  }
+
+  .pause-button {
+    background-color: #f44336;
+  }
+
+  .resume-button {
+    background-color: #4CAF50;
+  }
+</style>
+
+<h1>Shockhook Configuration</h1>
+
+<form action="/admin/apply" method="post">
+  <label class="range">
+    <span>Intensity:</span>
+    <input type="range" name="intensity" min="0" max="100" step="1" value="{{ .Intensity }}">
+  </label>
+
+  <label class="range" data-unit="s">
+    <span>Duration:</span>
+    <input type="range" name="duration" min="0.3" max="30.0" step="0.1" value="{{ .Duration.Seconds }}">
+  </label>
+
+  <label>
+    <input type="checkbox" name="allow_shock" {{ if .AllowShock }}checked{{ end }}>
+    Allow Shock
+  </label>
+
+  <label>
+    <input type="checkbox" name="allow_vibrate" {{ if .AllowVibrate }}checked{{ end }}>
+    Allow Vibrate
+  </label>
+
+  <label>
+    Allowed Rooms/Channel IDs
+    <br>
+    <small>
+      empty to allow none;
+      * to allow all;
+      # to comment;
+      one room per line;
+    </small>
+    <textarea name="allowed_rooms" rows="5">{{ concatLines .AllowedRooms }}</textarea>
+  </label>
+
+  <button type="submit" class="save-button">Save</button>
+</form>
+
+<form action="/admin/pause" method="post">
+  {{ if .Paused }}
+    <input type="hidden" name="paused" value="false">
+    <button type="submit" class="resume-button">Resume</button>
+  {{ else }}
+    <input type="hidden" name="paused" value="true">
+    <button type="submit" class="pause-button">Pause</button>
+  {{ end }}
+</form>
+
+<script async defer>
+  document.querySelectorAll('label.range').forEach(e => {
+    const valueSpan = document.createElement('span')
+    valueSpan.className = 'range-value'
+    e.querySelector('span').insertAdjacentElement('afterend', valueSpan)
+
+    const input = e.querySelector('input[type="range"]')
+    const updateValue = () => {
+      valueSpan.textContent = input.value + (e.dataset.unit || '')
+    }
+
+    input.addEventListener('input', updateValue)
+    updateValue()
+  })
+</script>
