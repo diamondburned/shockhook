@@ -14,7 +14,7 @@ SHOCKHOOK_SECRET=secret
 
 ## API
 
-Sending a command:
+#### Sending a command
 
 ```ts
 fetch(`/command/${secret}`, {
@@ -28,4 +28,9 @@ fetch(`/command/${secret}`, {
 })
 ```
 
-Admin configuration: go to `/admin`.
+#### Admin configuration
+
+Head to **/admin**. The endpoint is not protected; you must use a front proxy
+to add your own authentication. Internally, I am using Tailscale for this.
+
+![screenshot](./.github/screenshot01.png)
