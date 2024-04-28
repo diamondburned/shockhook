@@ -33,4 +33,4 @@ fetch(`/command/${secret}`, {
 Head to **/admin**. The endpoint is not protected; you must use a front proxy
 to add your own authentication. Internally, I am using Tailscale for this.
 
-![screenshot](./.github/screenshot01.png)
+<img alt="screenshot" src="./.github/screenshot01.png" width="600" />
